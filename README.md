@@ -41,3 +41,16 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling
+
+The PawPal+ scheduler includes several core features:
+
+- **Task Tracking**: Tasks track description, duration, priority, frequency (daily/weekly/monthly), deadline, and completion status
+- **Pet Management**: Pets maintain a list of assigned tasks and expose their daily care needs
+- **Owner Coordination**: Owners manage multiple pets and aggregate all tasks across them
+- **Automated Scheduling**: The Scheduler organizes pending tasks into daily plans using a sequential assignment algorithm that respects task priorities and completion status
+- **Constraint-Aware**: Plans can incorporate owner availability, preferences, and load limits (max tasks per day)
+- **Interactive UI**: Streamlit app lets users add pets, manage tasks, and generate daily schedules on demand
+
+**Key algorithm**: The scheduler uses a linear-time sequential assignment approach that prioritizes simplicity and clarity over NP-hard constraint optimization. This makes it fast to compute and easy to understand, while still producing functional daily schedules.

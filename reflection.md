@@ -43,7 +43,10 @@ Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsist
 **a. Constraints and priorities**
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
+++ time, priority, status, recurrence, preferences
+
 - How did you decide which constraints mattered most?
+++ Decided which constraints mattered most by prioritized constraints based on real pet-owner needs and what was already supported in the model. Time first because Pets need feeding/walks at times. Status second because pending vs done drives whether tasks are scheduled. Recurrence third because daily/weekly recurring tasks are real in pet care (repeating meds/food). Priority fourth because Task.priority lets you choose what to do first when time is tight. Lastly, Preferences last because a real owner system needs this for practical, human-aligned scheduling. So I kept “time + status + recurrence” as the highest urgency, with priority/preferences as supporting constraints for better scheduling decisions.
 
 **b. Tradeoffs**
 
@@ -62,7 +65,11 @@ Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsist
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
+++ I did not accept the AI's initial suggestion to use a complex constraint satisfaction algorithm for scheduling tasks. Instead, I opted for a simpler, sequential assignment approach that better fit the scope and requirements of this project.
+
 - How did you evaluate or verify what the AI suggested?
+++ I evaluated the AI's suggestion by:
+I wrote two unit tests to verify (task completion, pet task addition) that both approaches would satisfy, but the simpler approach passed immediately without complexity.
 
 ---
 

@@ -13,15 +13,19 @@ def main():
     owner.add_pet(pet1)
     owner.add_pet(pet2)
 
-    # Create at least three Tasks with different times
-    task1 = Task(task_id="feed_buddy", type="Feeding", duration_minutes=15, frequency="daily", priority=1)
-    task2 = Task(task_id="walk_buddy", type="Walking", duration_minutes=30, frequency="daily", priority=2)
-    task3 = Task(task_id="groom_whiskers", type="Grooming", duration_minutes=20, frequency="weekly", priority=1)
+    # Create tasks out-of-order with preferred time windows
+    task1 = Task(task_id="feed_buddy", type="Feeding", duration_minutes=15, frequency="daily", priority=1, preferred_time_window="09:30-09:45")
+    task2 = Task(task_id="walk_buddy", type="Walking", duration_minutes=30, frequency="daily", priority=2, preferred_time_window="08:00-08:30")
+    task3 = Task(task_id="groom_whiskers", type="Grooming", duration_minutes=20, frequency="weekly", priority=1, preferred_time_window="10:00-10:20")
+    task4 = Task(task_id="play_buddy", type="Play", duration_minutes=10, frequency="daily", priority=1, preferred_time_window="07:30-07:40", status="done")
+    task5 = Task(task_id="feed_whiskers", type="Feeding", duration_minutes=15, frequency="daily", priority=1, preferred_time_window="09:30-09:45")
 
-    # Add tasks to pets
+    # Add tasks to pets in non-chronological order
+    pet1.add_task(task3)
+    pet2.add_task(task2)
+    pet2.add_task(task5)
+    pet1.add_task(task4)
     pet1.add_task(task1)
-    pet1.add_task(task2)
-    pet2.add_task(task3)
 
     # Create Scheduler
     scheduler = Scheduler(owner)
@@ -38,10 +42,35 @@ def main():
     if schedule:
         total_time = schedule.total_time
         print(f"Total estimated time: {total_time} minutes\n")
+
+        # Print unsorted insertion sequence
+        print("Unsorted insertion order:")
         for task in schedule.tasks:
-            # Extract pet name from task_id (assuming format like "action_petname")
-            pet_name = task.task_id.split('_', 1)[1].capitalize() if '_' in task.task_id else "Unknown"
-            print(f"• {pet_name}: {task.to_display()}")
+            print(f"• {task.task_id}, {task.preferred_time_window}, status={task.status}")
+
+        # Use the new sort_by_time method from Scheduler
+        sorted_tasks = scheduler.sort_by_time(schedule.tasks)
+        print("\nSorted by preferred time (HH:MM):")
+        for task in sorted_tasks:
+            print(f"• {task.task_id}, {task.preferred_time_window}, status={task.status}")
+
+        # Use the new filter_tasks method from Scheduler
+        pending_buddy = scheduler.filter_tasks(pet_name="Buddy", status="pending")
+        print("\nFiltered (Buddy, pending):")
+        for task in pending_buddy:
+            print(f"• {task.task_id}, {task.preferred_time_window}, status={task.status}")
+
+        all_done = scheduler.filter_tasks(status="done")
+        print("\nFiltered (done):")
+        for task in all_done:
+            print(f"• {task.task_id}, {task.preferred_time_window}, status={task.status}")
+
+        conflicts = schedule.get_conflict_warnings()
+        if conflicts:
+            print("\nConflict warnings:")
+            for warning in conflicts:
+                print(f"• {warning}")
+
         print(f"\nTasks completed: {len([t for t in schedule.tasks if t.status == 'done'])}/{len(schedule.tasks)}")
     else:
         print("No schedule found.")
