@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawPal+ UML Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            color: #333;
+        }
+        
+        .info h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .info p {
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PawPal+ System Architecture</h1>
+        <p class="subtitle">Phase 3: Final UML Class Diagram</p>
+        
+        <div class="mermaid">
+classDiagram
+    class Task {
+        - task_id: str
+        - type: str
+        - duration_minutes: int
+        - frequency: str
+        - priority: int
+        - deadline: Optional~datetime~
+        - preferred_time_window: Optional~str~
+        - assigned: bool
+        - notes: Optional~str~
+        - status: str
+        + is_overdue(current_time) bool
+        + next_occurrence() Optional~Task~
+        + mark_done() Optional~Task~
+        + reschedule(new_deadline)
+        + score() float
+        + to_display() str
+        + start_time() Optional~str~
+        + as_time_interval() Optional~tuple[time, time]~
+    }
+
+    class Pet {
+        - name: str
+        - species: str
+        - breed: Optional~str~
+        - age: Optional~int~
+        - health_conditions: List~str~
+        - daily_needs: Dict~str, str~
+        - energy_level: Optional~str~
+        - tasks: List~Task~
+        + needs() Dict~str, str~
+        + add_task(task)
+        + remove_task(task_id)
+        + get_tasks() List~Task~
+        + get_pending_tasks() List~Task~
+        + is_high_risk() bool
+        + describe() str
+    }
+
+    class Owner {
+        - name: str
+        - contact_info: Optional~str~
+        - daily_availability: Dict~str, int~
+        - preferences: Dict~str, str~
+        - max_daily_tasks: Optional~int~
+        - pets: List~Pet~
+        + add_pet(pet)
+        + remove_pet(pet_name)
+        + get_pets() List~Pet~
+        + get_all_tasks() List~Task~
+        + get_pending_tasks() List~Task~
+        + set_availability(availability)
+        + update_preference(key, value)
+        + can_do_task(task) bool
+        + summary() str
+    }
+
+    class Scheduler {
+        - owner: Owner
+        - schedules: Dict~date, Schedule~
+        + create_schedule(date_, pet) Schedule
+        + get_schedule(date_) Optional~Schedule~
+        + organize_tasks(date_)
+        + find_task_and_pet(task_id) Optional~tuple[Task, Pet]~
+        + mark_task_complete(task_id) Optional~Task~
+        + manage_tasks()
+        + sort_by_time(tasks) List~Task~
+        + filter_tasks(pet_name, status) List~Task~
+        + find_conflicts(task, tasks) List~Task~
+        + add_recurring_task(task, occurrences) List~Task~
+        + get_all_scheduled_tasks() List~Task~
+    }
+
+    class Schedule {
+        - date: date
+        - owner: Optional~Owner~
+        - pet: Optional~Pet~
+        - tasks: List~Task~
+        - total_time: int
+        - constraints_applied: Dict~str, str~
+        - explanation: str
+        + add_task(task)
+        + remove_task(task_id)
+        + generate_plan(constraints)
+        + validate() bool
+        + get_timeline() List~str~
+        + explain() str
+        + adjust_for_overflow()
+        + get_conflict_warnings() List~str~
+    }
+
+    Owner "1" *-- "1..*" Pet : owns
+    Pet "1" *-- "0..*" Task : has
+    Scheduler "1" -- "1" Owner : manages
+    Scheduler "1" o-- "0..*" Schedule : creates
+    Schedule "1" o-- "1" Owner : references
+    Schedule "0..*" o-- "0..1" Pet : references
+    Schedule "1" *-- "0..*" Task : contains
+        </div>
+        
+        <div class="info">
+            <h3>Class Overview</h3>
+            <p><strong>Owner:</strong> Manages pets and their collective tasks</p>
+            <p><strong>Pet:</strong> Represents a pet with its own task list</p>
+            <p><strong>Task:</strong> Individual care task with scheduling constraints (supports recurring)</p>
+            <p><strong>Scheduler:</strong> Orchestrates task scheduling, conflict detection, and time-based sorting</p>
+            <p><strong>Schedule:</strong> A plan for a specific date with task assignments and explanations</p>
+        </div>
+        
+        <div class="info">
+            <h3>Key Features</h3>
+            <p>[+] Recurring task management (daily, weekly, monthly)</p>
+            <p>[+] Time-window based scheduling with conflict detection</p>
+            <p>[+] Task priority scoring and sorting by time</p>
+            <p>[+] Constraint-based plan generation with explanations</p>
+            <p>[+] Multi-pet support with aggregated task management</p>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

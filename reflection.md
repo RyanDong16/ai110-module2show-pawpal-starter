@@ -32,7 +32,7 @@ Provides plan management and validation (add_task, remove_task, generate_plan, v
 ++ Yes
 
 - If yes, describe at least one change and why you made it.
-++ 1) Missing explicit relationships
+++ Missing explicit relationships: 
 Schedule stores owner and pet, but Owner doesn’t have pets list (one-to-many) in this model.
 Task doesn’t point to Pet or Owner directly; it’s implied via schedule. That’s okay, but if you later query tasks by pet, you'll need explicit linking.
 Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsistent associations could happen.
@@ -51,7 +51,10 @@ Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsist
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+++ The scheduler uses a simple sequential assignment approach in `organize_tasks()` that adds pending tasks to the schedule without checking for time conflicts or overlaps. This means if two tasks have overlapping preferred_time_windows, both will be added to the schedule anyway, leaving conflict resolution to the user.
+
 - Why is that tradeoff reasonable for this scenario?
+++ This is a Module 2 learning project, not a production system for critical pet care. Simple working logic is more valuable than perfect optimization at this stage.
 
 ---
 
@@ -60,7 +63,12 @@ Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsist
 **a. How you used AI**
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
+++ AI helped flesh out the four core classes (Task, Pet, Owner, Scheduler) with specific methods, attributes, and responsibilities. Instead of guessing, AI suggested logical method signatures (e.g., add_task, get_pending_tasks, organize_tasks).
+++ AI generated the full method bodies for core functionality (marking tasks complete, adding pets to owners, filtering tasks by status). This accelerated the build phase.
+
 - What kinds of prompts or questions were most helpful?
+++ "Flesh out the core implementation of your four classes" and "Write a script that performs the following" were most helpful because they gave AI a specific, concrete task with clear scope. This avoided vague suggestions and generated directly usable code.
+++ "If a user submits a form to add a new pet, which class method should handle that data?" forced alignment between UI design and backend logic. Very clarifying.
 
 **b. Judgment and verification**
 
@@ -78,8 +86,8 @@ I wrote two unit tests to verify (task completion, pet task addition) that both 
 **a. What you tested**
 
 - What behaviors did you test?
-++ 1) Task Completion Status Change: Called mark_done() on a Task and verified that the status changed from "pending" to "done". This tests the core task lifecycle behavior.
-++ 2) Pet Task Addition: Added a Task to a Pet using add_task() and verified the pet's task count increased. This tests the pet-task relationship and data aggregation.
+++ Called mark_done() on a Task and verified that the status changed from "pending" to "done". This tests the core task lifecycle behavior.
+++ Added a Task to a Pet using add_task() and verified the pet's task count increased. This tests the pet-task relationship and data aggregation.
 
 - Why were these tests important?
 ++ Task completion is the foundation of the scheduling workflow—if tasks don't mark complete correctly, recurring tasks won't be generated and the daily schedule stays stale. Pet task addition is critical because the entire scheduling logic depends on aggregating tasks from pets; if tasks don't properly attach to pets, the aggregate operations (get_pending_tasks, organize_tasks) would fail silently. These two tests verify the core data model relationships work before building more complex scheduling logic on top.
@@ -87,7 +95,11 @@ I wrote two unit tests to verify (task completion, pet task addition) that both 
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
+++ I'm confident that the core scheduling logic works correctly. The task completion, pet task addition, and daily schedule generation all pass unit tests and manual testing through the Streamlit UI.
+
+
 - What edge cases would you test next if you had more time?
+++ Tasks with past deadlines should be marked overdue. Schedule should handle deadline < today gracefully.
 
 ---
 
@@ -96,11 +108,14 @@ I wrote two unit tests to verify (task completion, pet task addition) that both 
 **a. What went well**
 
 - What part of this project are you most satisfied with?
+++ Using Copilot as a reference to help whenever I was having trouble with the instructions. Getting the Streamlit app to work overall was satisfying as well since it was a confusing project compared to the previous week's project.
 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+++ If I had the chance to redesign/ improve the code next time, I would not rely on using Copilot as much as I did. I understand that I'm learning to use AI, but I want to be more in control of the process.
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+++ One thing I learned from this project is the UML diagram. The diagram helped with visualizing the connections/ roadmap of what and how the code should be implemented.
