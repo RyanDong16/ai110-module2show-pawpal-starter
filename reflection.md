@@ -78,7 +78,11 @@ I wrote two unit tests to verify (task completion, pet task addition) that both 
 **a. What you tested**
 
 - What behaviors did you test?
+++ 1) Task Completion Status Change: Called mark_done() on a Task and verified that the status changed from "pending" to "done". This tests the core task lifecycle behavior.
+++ 2) Pet Task Addition: Added a Task to a Pet using add_task() and verified the pet's task count increased. This tests the pet-task relationship and data aggregation.
+
 - Why were these tests important?
+++ Task completion is the foundation of the scheduling workflow—if tasks don't mark complete correctly, recurring tasks won't be generated and the daily schedule stays stale. Pet task addition is critical because the entire scheduling logic depends on aggregating tasks from pets; if tasks don't properly attach to pets, the aggregate operations (get_pending_tasks, organize_tasks) would fail silently. These two tests verify the core data model relationships work before building more complex scheduling logic on top.
 
 **b. Confidence**
 

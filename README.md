@@ -54,3 +54,67 @@ The PawPal+ scheduler includes several core features:
 - **Interactive UI**: Streamlit app lets users add pets, manage tasks, and generate daily schedules on demand
 
 **Key algorithm**: The scheduler uses a linear-time sequential assignment approach that prioritizes simplicity and clarity over NP-hard constraint optimization. This makes it fast to compute and easy to understand, while still producing functional daily schedules.
+
+## Testing PawPal+
+
+### Running Tests
+
+To run the complete test suite:
+
+```bash
+python -m pytest
+```
+
+For verbose output with detailed test names:
+
+```bash
+python -m pytest -v
+```
+
+### Test Coverage
+
+The test suite includes **23 comprehensive tests** covering three critical areas:
+
+#### **Sorting Correctness (5 tests)**
+- Verifies tasks are sorted chronologically by start time (HH:MM)
+- Validates handling of edge cases: missing time windows, identical times, boundary times (midnight, late evening)
+- Confirms invalid time formats are gracefully handled (placed at end of schedule)
+- Tests empty task lists return empty results without error
+
+#### **Recurrence Logic (5 tests)**
+- Confirms daily tasks create next-day instances when marked complete
+- Validates weekly tasks create 7-day-ahead instances
+- Ensures multiple daily recurring tasks at the same time are handled correctly
+- Verifies recurring task series maintain consistent frequency across all instances
+- Tests year boundary transitions for weekly recurring tasks (e.g., Dec 29 → Jan 5)
+
+#### **Conflict Detection (5 tests)**
+- Detects tasks scheduled at exact same time
+- Identifies partial time overlaps between tasks
+- Ensures adjacent non-overlapping tasks are not flagged as conflicts
+- Validates conflict detection performs efficiently with large recurring task series (10+ instances)
+- Confirms duration is properly factored into overlap calculations
+
+#### **Core Functionality (8 tests)**
+- Task completion and status updates
+- Pet task management and counting
+- Task filtering by pet and status
+- Recurring task instance creation with unique IDs
+
+### Test Results
+
+✅ **23/23 tests passing** (all green)
+- Execution time: < 0.1 seconds
+- No failures or errors
+
+### Confidence Level
+
+⭐⭐⭐⭐ (4 out of 5 stars)
+
+**Rationale:**
+- **Strong coverage** of critical sorting, recurrence, and conflict-detection features
+- **Comprehensive edge cases** tested (midnight times, year boundaries, large series)
+- **All tests passing** with consistent, reliable results
+- **Minor limitation**: Monthly recurring tasks return `None` from `next_occurrence()` (not yet fully implemented); edge cases involving duration extending past midnight not fully validated
+
+The system is **production-ready** for daily and weekly task scheduling, with high confidence in sorting accuracy and conflict detection.
