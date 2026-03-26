@@ -247,7 +247,7 @@ The system is **production-ready** for daily and weekly task scheduling, with hi
 
 ### 📸 Demo
 
-<a href="/course_images/ai110/demo.png" target="_blank"><img src='/course_images/ai110/demo.png' title='PawPal+ App Screenshot' width='' alt='PawPal+ App' class='center-block' /></a>
+![alt text](demo.png)
 
 **PawPal+ in action:** The Streamlit app displays the complete scheduling interface with:
 - Owner and pet setup inputs
