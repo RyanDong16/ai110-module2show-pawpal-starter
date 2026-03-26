@@ -5,18 +5,37 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
-++ The initial UML design consists of the pet owner, the pet, the pet care task, the time constraints, and the daily plan. The UML design outlines the pet care scheduling app that makes pet care efficient and organized. The pet owner has the pets, the pets have tasks, and the task have time constraints leading to the daily plan.
+++ The initial UML design consists of Owner, Pet, Task, and Scheduler. The UML design outlines the pet care scheduling app that makes pet care efficient and organized. The pet owner has the pets, the pets have tasks, and the task have time constraints leading to the daily plan.
 
 - What classes did you include, and what responsibilities did you assign to each?
-++ Classes included are Pet Owner, Pet, Pet Care Task, Time Constraints, and Daily Plan. The Pet Owner's responsibilities are their information like name, avaiable time, and their pet. The Pet's responsibilities are information such as name, age, gender, species, and their tasks. The Pet Care Task's responsibilities are holding what the task is, duration of task, and order of priority. The Time Constraints' responsibilities are tasks, available time frame, and maximizing efficiency. The Daily Plan's responsibilities are the dates, scheduled tasks, and completed/ not completed tasks.
+++ 1) Owner
+Responsibility: represents the pet owner.
+Holds owner info (name, contact_info), availability breakouts (daily_availability), preference rules (preferences), and load limits (max_daily_tasks).
+Provides methods to update availability/preferences and simple eligibility check (can_do_task).
+
+++ 2) Pet
+Responsibility: represents the pet that needs care.
+Holds pet profile fields (name, species, breed, age) and care metadata (health_conditions, daily_needs, energy_level).
+Provides methods to expose what is needed (needs), risk assessment (is_high_risk), and readable summary (describe).
+++ 3) Task
+Responsibility: atomic care work item.
+Holds task details (task_id, type, duration_minutes, priority, deadline, preferred_time_window, assigned, notes, status).
+Provides lifecycle behavior (mark_done, reschedule), deadline check (is_overdue), scoring for scheduling (score), and display string (to_display).
+++ 4) Schedule
+Responsibility: the daily plan aggregator.
+Holds date, owner/pet refs, scheduled task list, computed totals (total_time), constraints applied, and textual rationale (explanation).
+Provides plan management and validation (add_task, remove_task, generate_plan, validate, get_timeline, explain, adjust_for_overflow).
 
 **b. Design changes**
 
 - Did your design change during implementation?
-++ 
+++ Yes
 
 - If yes, describe at least one change and why you made it.
-
+++ 1) Missing explicit relationships
+Schedule stores owner and pet, but Owner doesn’t have pets list (one-to-many) in this model.
+Task doesn’t point to Pet or Owner directly; it’s implied via schedule. That’s okay, but if you later query tasks by pet, you'll need explicit linking.
+Schedule doesn’t enforce that a task belongs to the pet or owner, so inconsistent associations could happen.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
